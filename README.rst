@@ -3,13 +3,27 @@ luigi-slack
 
 `luigi-slack` adds Slack notifications to Luigi.
 
-Features:
+
+Current status
+--------------
+
+At the moment this is a proof-of-concept, version 0.1
+
+This is **experimental** and the API could change drastically
+
+
+Features
+--------
+
+Roadmap to version 1.0
 
 - Python 3
 - Configurable notifications on different events
 - Straightforward interface
 
-Current status: PoC, experimental
+
+Usage
+-----
 
 Example of usage::
 
