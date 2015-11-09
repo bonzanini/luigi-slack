@@ -11,11 +11,9 @@ from luigi_slack import events
 class SlackBot(object):
 
     def __init__(self,
-                 token: str=None,
-                 channels: list=[],
-                 events: list=[events.FAILURE, events.SUCCESS]):
-        if not token:
-            raise ValueError('token not set')
+                 token,
+                 channels=[],
+                 events=[events.FAILURE, events.SUCCESS]):
         if not isinstance(events, list):
             raise ValueError('events must be a list, {} given'.format(type(events)))
         if not channels:
@@ -99,7 +97,7 @@ _event_handlers = {
 
 
 @contextmanager
-def notify(slacker: SlackBot):
+def notify(slacker):
     slacker.set_handlers()
     yield
     slacker.send_notification()
