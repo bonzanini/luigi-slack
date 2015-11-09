@@ -36,3 +36,7 @@ Example of usage::
                        events=['SUCCESS', 'FAILURE'])
     with notify(slacker):
         luigi.run(main_task_cls=MyTask)
+
+--------
+
+Credits: inspired by `luigi-monitor <https://github.com/hudl/luigi-monitor>`_.
