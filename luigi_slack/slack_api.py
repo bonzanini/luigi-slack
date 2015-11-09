@@ -7,7 +7,7 @@ class SlackBotConf(object):
 
 class SlackAPI(object):
     
-    def __init__(self, token, bot=SlackBotConf():
+    def __init__(self, token, bot=SlackBotConf()):
         self.client = SlackClient(token)
         self._all_channels = []
         self.bot = bot
