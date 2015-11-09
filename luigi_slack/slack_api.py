@@ -1,21 +1,16 @@
 import json
 from slackclient import SlackClient
 
+class SlackBotConf(object):
+    def __init__(self):
+        self.username = 'Luigi-slack Bot'
+
 class SlackAPI(object):
     
-    def __init__(self, token):
+    def __init__(self, token, bot=SlackBotConf():
         self.client = SlackClient(token)
         self._all_channels = []
-
-    def get_channel_names(self):
-        res = self.client.api_call('channels.list')
-        channels = json.loads(res.decode())
-        return [channel['name'] for channel in channels]
-
-    def get_channel_ids(self):
-        res = self.client.api_call('channels.list')
-        channels = json.loads(res.decode())
-        return [channel['id'] for channel in channels]
+        self.bot = bot
 
     def _get_channels(self):
         res = self.client.api_call('channels.list')
@@ -42,4 +37,4 @@ class SlackAPI(object):
             self.client.api_call('chat.postMessage',
                                  text=message,
                                  channel=channel['id'],
-                                 username='Luigi-Slack Bot')
+                                 username=self.bot.username)
