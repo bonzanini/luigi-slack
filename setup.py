@@ -4,7 +4,7 @@ long_description = ''
 
 setup(
     name='luigi-slack',
-    version='0.1',
+    version='0.1.1',
     description='Send Slack notifications to report on Luigi pipelines',
     long_description=long_description,
     author='Marco Bonzanini',
