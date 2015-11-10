@@ -3,6 +3,20 @@ luigi-slack
 
 `luigi-slack` adds Slack notifications to Luigi.
 
+Installation
+------------
+
+From the cheese shop::
+
+    pip install luigi_slack
+
+
+From GitHub::
+
+    git clone https://github.com/bonzanini/luigi-slack
+    cd luigi-slack
+    python setup.py install
+
 
 Current status
 --------------
@@ -32,8 +46,7 @@ Example of usage::
     # ...
 
     slacker = SlackBot(token='my-token',
-                       channels=['mychannel', 'anotherchannel'],
-                       events=['SUCCESS', 'FAILURE'])
+                       channels=['mychannel', 'anotherchannel'])
     with notify(slacker):
         luigi.run(main_task_cls=MyTask)
 
