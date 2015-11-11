@@ -41,17 +41,17 @@ Usage
 
 Example of usage::
 
-```python
-import luigi
-from luigi_slack import SlackBot, notify
+.. code-block:: python
+    import luigi
+    from luigi_slack import SlackBot, notify
 
-# ...
+    # ...
 
-slacker = SlackBot(token='my-token',
+    slacker = SlackBot(token='my-token',
                    channels=['mychannel', 'anotherchannel'])
-with notify(slacker):
-    luigi.run(main_task_cls=MyTask)
-```
+    with notify(slacker):
+        luigi.run(main_task_cls=MyTask)
+
 
 --------
 
