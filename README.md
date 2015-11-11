@@ -39,9 +39,9 @@ Roadmap to version 1.0
 Usage
 -----
 
-Example of usage:
+Example of usage::
 
-.. code-block:: python
+```python
     import luigi
     from luigi_slack import SlackBot, notify
 
@@ -51,7 +51,7 @@ Example of usage:
                    channels=['mychannel', 'anotherchannel'])
     with notify(slacker):
         luigi.run(main_task_cls=MyTask)
-
+```
 
 --------
 
