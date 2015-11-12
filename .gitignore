@@ -3,4 +3,5 @@ venv
 .DS_Store
 *.egg-info
 dist
+.coverage
 
