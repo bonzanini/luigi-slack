@@ -6,12 +6,12 @@ luigi-slack
 Installation
 ------------
 
-From the cheese shop::
+From the cheese shop:
 
     pip install luigi_slack
 
 
-From GitHub::
+From GitHub:
 
     git clone https://github.com/bonzanini/luigi-slack
     cd luigi-slack
@@ -39,20 +39,20 @@ Roadmap to version 1.0
 Usage
 -----
 
-Example of usage::
+Example of usage:
 
 ```python
-    import luigi
-    from luigi_slack import SlackBot, notify
+import luigi
+from luigi_slack import SlackBot, notify
 
-    # ...
+# ...
 
-    slacker = SlackBot(token='my-token',
+slacker = SlackBot(token='my-token',
                    channels=['mychannel', 'anotherchannel'])
-    with notify(slacker):
-        luigi.run(main_task_cls=MyTask)
+with notify(slacker):
+    luigi.run(main_task_cls=MyTask)
 ```
 
 --------
 
-Credits: inspired by `luigi-monitor <https://github.com/hudl/luigi-monitor>`_.
+Credits: inspired by [luigi-monitor](https://github.com/hudl/luigi-monitor>).
