@@ -15,7 +15,10 @@ class SlackAPI(object):
     def _get_channels(self):
         res = self.client.api_call('channels.list')
         _channels = json.loads(res.decode())
-        return _channels['channels']
+        _parsed_channels = _channels.get('channels', None)
+        if _parsed_channels is None:
+            raise Exception("Could not get Slack channels. Are you sure your token is correct?")
+        return _parsed_channels
 
     def get_channels(self, reload_channels=False):
         if not self._all_channels or reload_channels:
