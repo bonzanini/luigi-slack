@@ -4,4 +4,6 @@ venv
 *.egg-info
 dist
 .coverage
+htmlcov
+.eggs
 

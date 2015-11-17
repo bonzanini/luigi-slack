@@ -1,6 +1,30 @@
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
+
+class PyTest(TestCommand):
+    user_options = []
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import subprocess
+        import sys
+        errno = subprocess.call([sys.executable, 'runtests.py'])
+        raise SystemExit(errno)
 
 long_description = ''
+
+install_requires = [
+    'luigi>=1.3',
+    'slackclient>=0.16'
+]
+
+tests_require = [
+    'pytest'
+]
 
 setup(
     name='luigi-slack',
@@ -12,10 +36,9 @@ setup(
     url='https://github.com/bonzanini',
     license='MIT',
     packages=find_packages(),
-    install_requires=[
-        'luigi>=1.3',
-        'slackclient>=0.16'
-    ],
+    install_requires=install_requires,
+    tests_require=tests_require,
+    cmdclass = {'test': PyTest},
     include_package_data=True,
     zip_safe=False,
     classifiers=[
@@ -27,5 +50,5 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.4',
         'Topic :: System :: Monitoring',
-    ]
+    ],
 )
