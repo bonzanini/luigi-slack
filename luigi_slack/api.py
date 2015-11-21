@@ -4,7 +4,7 @@ import inspect
 from contextlib import contextmanager
 from collections import defaultdict
 import luigi
-from luigi_slack.slack_api import SlackAPI, SlackBotConf
+from luigi_slack.slack_api import SlackAPI
 from luigi_slack.events import SUCCESS, MISSING, FAILURE, START, PROCESSING_TIME
 from luigi_slack.events import event_label
 
@@ -15,16 +15,16 @@ class SlackBot(object):
                  channels=[],
                  events=[FAILURE],
                  max_events=5,
-                 bot_conf=SlackBotConf(),
+                 username='Luigi-slack Bot',
                  task_representation=str):
         if not isinstance(events, list):
             raise ValueError('events must be a list, {} given'.format(type(events)))
         if not channels:
             logging.info('SlackBot(channels=[]): notifications are not sent')
         self.events = events
-        self.client = SlackAPI(token, bot_conf)
+        self.client = SlackAPI(token, username)
         self.channels = channels
-        self.max_events = 5
+        self.max_events = max_events
         self.event_queue = defaultdict(list) 
         self.task_repr=task_representation
 
@@ -112,8 +112,10 @@ class SlackBot(object):
                 else: 
                     for event in self.event_queue[event_type]:
                         try:
+                            # only "failure" is a dict
                             messages.append("Task: {}; Exception: {}".format(event['task'], event['exception']))
                         except TypeError:
+                            # all the other events are str
                             messages.append(event)
         return messages
 

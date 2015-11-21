@@ -1,16 +1,16 @@
 import json
 from slackclient import SlackClient
+import logging
 
-class SlackBotConf(object):
-    def __init__(self):
-        self.username = 'Luigi-slack Bot'
+class ChannelNotFoundError(Exception):
+    pass
 
 class SlackAPI(object):
     
-    def __init__(self, token, bot_conf=SlackBotConf()):
+    def __init__(self, token, username='Luigi-slack Bot'):
         self.client = SlackClient(token)
         self._all_channels = self._get_channels()
-        self.bot = bot_conf
+        self.username = username
 
     def _get_channels(self):
         res = self.client.api_call('channels.list')
@@ -25,19 +25,19 @@ class SlackAPI(object):
             self._all_channels = self._get_channels()
         return self._all_channels
 
-    def channel_name_to_id(self, names):
-        name_to_id = []
-        for name in names:
-            for channel in self._all_channels:
-                if channel['name'] == name:
-                    name_to_id.append({'name': channel['name'], 'id': channel['id']})
-        return name_to_id
+    def channel_name_to_id(self, channel_name):
+        for channel in self._all_channels:
+            if channel['name'] == channel_name:
+                return channel['id']
+        raise ChannelNotFoundError("Channel {} not in the list of available channels".format(channel_name))
 
     def bulk_message(self, message, post_to=[]):
-        channel_map = self.channel_name_to_id(post_to)
-        for channel in channel_map:
+        for channel in post_to:
+            if not channel.startswith('@'):
+                channel = self.channel_name_to_id(channel)
+            logging.debug("Posting message to {}".format(channel))
             self.client.api_call('chat.postMessage',
                                  text=message,
-                                 channel=channel['id'],
-                                 username=self.bot.username)
+                                 channel=channel,
+                                 username=self.username)
         return True
