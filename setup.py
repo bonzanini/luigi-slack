@@ -19,7 +19,7 @@ long_description = ''
 
 install_requires = [
     'luigi>=1.3',
-    'slackclient>=0.16'
+    'slackclient>=1.0,<1.1'
 ]
 
 tests_require = [

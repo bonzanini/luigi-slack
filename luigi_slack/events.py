@@ -4,6 +4,7 @@ MISSING = "MISSING"
 START = "START"
 PROCESSING_TIME = "PROCESSING_TIME"
 
+
 def event_label(event):
     """Format event constants for Slack
 

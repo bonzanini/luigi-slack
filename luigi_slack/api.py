@@ -5,8 +5,16 @@ from contextlib import contextmanager
 from collections import defaultdict
 import luigi
 from luigi_slack.slack_api import SlackAPI
-from luigi_slack.events import SUCCESS, MISSING, FAILURE, START, PROCESSING_TIME
+from luigi_slack.events import SUCCESS
+from luigi_slack.events import MISSING
+from luigi_slack.events import FAILURE
+from luigi_slack.events import START
+from luigi_slack.events import PROCESSING_TIME
 from luigi_slack.events import event_label
+
+log = logging.getLogger('luigi_slack')
+log.setLevel(logging.DEBUG)
+
 
 class SlackBot(object):
 
@@ -20,13 +28,13 @@ class SlackBot(object):
         if not isinstance(events, list):
             raise ValueError('events must be a list, {} given'.format(type(events)))
         if not channels:
-            logging.info('SlackBot(channels=[]): notifications are not sent')
+            log.info('SlackBot(channels=[]): notifications are not sent')
         self.events = events
         self.client = SlackAPI(token, username)
         self.channels = channels
         self.max_events = max_events
-        self.event_queue = defaultdict(list) 
-        self.task_repr=task_representation
+        self.event_queue = defaultdict(list)
+        self.task_repr = task_representation
 
     def send_notification(self):
         message = self._format_message()
@@ -109,10 +117,11 @@ class SlackBot(object):
                 messages.append(label)
                 if len(self.event_queue[event_type]) > self.max_events:
                     messages.append("More than {} events of type {}. Please check logs.".format(self.max_events, label))
-                else: 
+                else:
                     for event in self.event_queue[event_type]:
                         try:
                             # only "failure" is a dict
+                            msg = "Task: {}; Exception: {}".format(event['task'], event['exception'])
                             messages.append("Task: {}; Exception: {}".format(event['task'], event['exception']))
                         except TypeError:
                             # all the other events are str
