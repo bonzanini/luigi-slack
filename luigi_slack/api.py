@@ -16,6 +16,14 @@ log = logging.getLogger('luigi_slack')
 log.setLevel(logging.DEBUG)
 
 
+class SlackMessage(object):
+
+    def __init__(self, title=None, fields={}, success=None):
+        self.title = title
+        self.fields = fields
+        self.success = success
+
+
 class SlackBot(object):
 
     def __init__(self,
@@ -104,38 +112,40 @@ class SlackBot(object):
 
     def _format_message(self):
         job = os.path.basename(inspect.stack()[-1][1])
-        messages = ["*Status report for {}*".format(job)]
+        title = "*Status report for {}*".format(job)
         if self._only_success():
             if SUCCESS in self.events:
-                messages.append("Job ran successfully!")
+                messages = {event_label(SUCCESS): ["Job ran successfully!"]}
+                success = True
             else:
                 return None
         else:
-            messages = self._message_append_events(messages)
-        text = "\n".join(messages)
-        return text
+            messages = self._event_messages()
+            success = False
+        return SlackMessage(title=title, fields=messages, success=success)
 
     def _only_success(self):
         return len(self.event_queue[SUCCESS]) == len(self.event_queue[START])
 
-    def _message_append_events(self, messages):
+    def _event_messages(self):
+        messages = {}
         for event_type in self.events:
             if event_type in self.event_queue:
                 label = event_label(event_type)
                 if not self.event_queue[event_type]:
-                    messages.append("{}: none".format(label))
+                    messages[label] = ['none']
                 elif len(self.event_queue[event_type]) > self.max_events:
-                    messages.append("{}: more than {} events, check logs.".format(label, self.max_events))
+                    messages[label] = ["more than {} events, check logs.".format(self.max_events)]
                 else:
-                    messages.append("{}:".format(label))
+                    messages[label] = []
                     for event in self.event_queue[event_type]:
                         try:
                             # only "failure" is a dict
                             msg = "Task: {}; Exception: {}".format(event['task'], event['exception'])
-                            messages.append("Task: {}; Exception: {}".format(event['task'], event['exception']))
+                            messages[label].append("Task: {}; Exception: {}".format(event['task'], event['exception']))
                         except TypeError:
                             # all the other events are str
-                            messages.append(event)
+                            messages[label].append(event)
         return messages
 
 

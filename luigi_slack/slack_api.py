@@ -42,15 +42,24 @@ class SlackAPI(object):
         raise ChannelNotFoundError("Channel {} not in the list of available channels".format(channel_name))
 
     def bulk_message(self, message, post_to=[]):
-        log.debug("Posting bulk message={}".format(message))
+        log.debug("Posting bulk message={}".format(message.title))
         for channel in post_to:
             if not channel.startswith('@'):
                 channel = self.channel_name_to_id(channel)
             log.debug("Posting message to {}".format(channel))
+            success_color = 'good' if message.success else 'danger'
+            attachments = {'color': success_color}
+            fields = []
+            for label, msg in message.fields.items():
+                fields.append({'title': label, 'value': "\n".join(msg), 'short': False})
+            attachments['fields'] = fields
+            attachments = json.dumps([attachments])
             response = self.client.api_call('chat.postMessage',
-                                            text=message,
+                                            text=message.title,
+                                            attachments=attachments,
                                             channel=channel,
                                             username=self.username)
+            log.debug(response)
             if not response['ok']:
                 log.debug("Error while posting message to {}: {}".format(channel, response['error']))
         return True

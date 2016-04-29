@@ -48,9 +48,9 @@ class TestEvents(unittest.TestCase):
     def test_event_label(self):
         """Test event labels for output"""
         fixtures = {
-            'SUCCESS': '*Success*',
-            'FAILURE': '*Failure*',
-            'MISSING': '*Missing*',
+            'SUCCESS': 'Success',
+            'FAILURE': 'Failure',
+            'MISSING': 'Missing',
         }
         for event, expected in fixtures.items():
             self.assertEqual(event_label(event), expected)

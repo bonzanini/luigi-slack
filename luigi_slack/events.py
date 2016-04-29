@@ -10,4 +10,4 @@ def event_label(event):
 
     e.g. from `MISSING` to `*Missing*`
     """
-    return "*{}*".format(event.lower().title())
+    return "{}".format(event.lower().title())
