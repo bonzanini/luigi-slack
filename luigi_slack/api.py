@@ -30,6 +30,7 @@ class SlackBot(object):
         if not channels:
             log.info('SlackBot(channels=[]): notifications are not sent')
         self.events = events
+        self._events_to_handle = self.events + [START]
         self.client = SlackAPI(token, username)
         self.channels = channels
         self.max_events = max_events
@@ -45,7 +46,7 @@ class SlackBot(object):
 
     def set_handlers(self):
         self._init_handlers()
-        for event in self.events:
+        for event in self._events_to_handle:
             if event not in self._event_handlers:
                 raise ValueError("{} is not a valid event type".format(event))
             handler = self._event_handlers[event]['luigi_handler']
@@ -81,7 +82,6 @@ class SlackBot(object):
         task = self.task_repr(task)
         self.event_queue[FAILURE] = [fail for fail in self.event_queue[FAILURE] if task != fail['task']]
         self.event_queue[MISSING] = [miss for miss in self.event_queue[MISSING] if task != miss]
-        self.event_queue[START] = [start for start in self.event_queue[START] if task != start]
         self.event_queue[SUCCESS].append(task)
 
     def _failure(self, task, exception):
@@ -104,24 +104,30 @@ class SlackBot(object):
 
     def _format_message(self):
         job = os.path.basename(inspect.stack()[-1][1])
-        messages = ["Status report for {}".format(job)]
-        messages = self._message_append_events(messages)
-        if len(messages) == 1:
+        messages = ["*Status report for {}*".format(job)]
+        if self._only_success():
             if SUCCESS in self.events:
                 messages.append("Job ran successfully!")
             else:
                 return None
+        else:
+            messages = self._message_append_events(messages)
         text = "\n".join(messages)
         return text
+
+    def _only_success(self):
+        return len(self.event_queue[SUCCESS]) == len(self.event_queue[START])
 
     def _message_append_events(self, messages):
         for event_type in self.events:
             if event_type in self.event_queue:
                 label = event_label(event_type)
-                messages.append(label)
-                if len(self.event_queue[event_type]) > self.max_events:
-                    messages.append("More than {} events of type {}. Please check logs.".format(self.max_events, label))
+                if not self.event_queue[event_type]:
+                    messages.append("{}: none".format(label))
+                elif len(self.event_queue[event_type]) > self.max_events:
+                    messages.append("{}: more than {} events, check logs.".format(label, self.max_events))
                 else:
+                    messages.append("{}:".format(label))
                     for event in self.event_queue[event_type]:
                         try:
                             # only "failure" is a dict
