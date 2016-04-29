@@ -28,7 +28,7 @@ tests_require = [
 
 setup(
     name='luigi-slack',
-    version='0.1.4',
+    version='0.1.5',
     description='Send Slack notifications to report on Luigi pipelines',
     long_description=long_description,
     author='Marco Bonzanini',
