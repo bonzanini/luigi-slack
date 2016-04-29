@@ -39,7 +39,8 @@ class SlackBot(object):
     def send_notification(self):
         message = self._format_message()
         post_to = self.channels
-        self.client.bulk_message(message, post_to)
+        if message:
+            self.client.bulk_message(message, post_to)
         return True
 
     def set_handlers(self):
@@ -106,7 +107,10 @@ class SlackBot(object):
         messages = ["Status report for {}".format(job)]
         messages = self._message_append_events(messages)
         if len(messages) == 1:
-            messages.append("Job ran successfully!")
+            if SUCCESS in self.events:
+                messages.append("Job ran successfully!")
+            else:
+                return None
         text = "\n".join(messages)
         return text
 
