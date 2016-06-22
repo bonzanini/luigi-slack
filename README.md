@@ -23,7 +23,7 @@ Bleeding edge version from GitHub:
 Features
 --------
 
-At the moment this is a proof-of-concept, version 0.1, and it should consider **experimental**.
+At the moment this is a proof-of-concept, version 0.1, and it should be considered **experimental**.
 
 Features:
 
