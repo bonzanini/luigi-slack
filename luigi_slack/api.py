@@ -32,7 +32,8 @@ class SlackBot(object):
                  events=[FAILURE],
                  max_events=5,
                  username='Luigi-slack Bot',
-                 task_representation=str):
+                 task_representation=str,
+                 print_env=[]):
         if not isinstance(events, list):
             raise ValueError('events must be a list, {} given'.format(type(events)))
         if not channels:
@@ -44,6 +45,7 @@ class SlackBot(object):
         self.max_events = max_events
         self.event_queue = defaultdict(list)
         self.task_repr = task_representation
+        self._print_env = print_env
 
     def send_notification(self):
         message = self._format_message()
@@ -122,6 +124,10 @@ class SlackBot(object):
         else:
             messages = self._event_messages()
             success = False
+        if self._print_env:
+            env_to_print = ["{}={}".format(env_var, os.environ.get(env_var, ''))
+                            for env_var in self._print_env]
+            messages['Environment'] = env_to_print
         return SlackMessage(title=title, fields=messages, success=success)
 
     def _only_success(self):
