@@ -64,6 +64,7 @@ SlackBot Configuration
 - max_events: max number of events of the same type displayed, before a "please check logs" message is given (default=5)
 - username: the screen name of your bot (default='Luigi-slack Bot')
 - task_representation: the function used to give a string representation of the task (default=str)
+- print_env: list of environment variables to include in the notification (default=[]). Useful when running multiple pipelines/environments and sending the notification in a single Slack channel.
 
 [Blog post](http://marcobonzanini.com/2015/11/21/adding-slack-notifications-to-a-luigi-pipeline-in-python/) with a more verbose description of this package.
 
