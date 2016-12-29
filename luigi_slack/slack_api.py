@@ -16,10 +16,11 @@ class ChannelListNotLoadedError(Exception):
 
 class SlackAPI(object):
 
-    def __init__(self, token, username='Luigi-slack Bot'):
+    def __init__(self, token, username='Luigi-slack Bot', as_user=False):
         self.client = SlackClient(token)
         self._all_channels = self._get_channels()
         self.username = username
+        self.as_user = as_user
 
     def _get_channels(self):
         response = self.client.api_call('channels.list')
@@ -58,7 +59,8 @@ class SlackAPI(object):
                                             text=message.title,
                                             attachments=attachments,
                                             channel=channel,
-                                            username=self.username)
+                                            username=self.username,
+                                            as_user=self.as_user)
             log.debug(response)
             if not response['ok']:
                 log.debug("Error while posting message to {}: {}".format(channel, response['error']))
