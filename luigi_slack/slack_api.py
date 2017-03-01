@@ -16,20 +16,26 @@ class ChannelListNotLoadedError(Exception):
 
 class SlackAPI(object):
 
-    def __init__(self, token, username='Luigi-slack Bot', as_user=False):
+    def __init__(self, token, username='Luigi-slack Bot', as_user=False, use_private_channels=True):
         self.client = SlackClient(token)
-        self._all_channels = self._get_channels()
+        self._all_channels = self._get_channels(use_private_channels)
         self.username = username
         self.as_user = as_user
 
-    def _get_channels(self):
+    def _get_channels(self, use_private_channels):
         response = self.client.api_call('channels.list')
         if not response['ok']:
             raise ChannelListNotLoadedError("Error while loading channels: {}".format(response['error']))
-        _parsed_channels = response.get('channels', [])
-        if not _parsed_channels:
+        channels = response.get('channels', [])
+        if not channels:
             raise ChannelListNotLoadedError("Channel list is empty")
-        return _parsed_channels
+        if use_private_channels:
+            response = self.client.api_call('groups.list')
+            if not response['ok']:
+                raise ChannelListNotLoadedError("Error while loading private channels: {}".format(response['error']))
+            channels += response.get('groups', [])
+
+        return channels
 
     def get_channels(self, reload_channels=False):
         if not self._all_channels or reload_channels:

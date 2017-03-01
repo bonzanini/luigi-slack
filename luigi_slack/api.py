@@ -33,6 +33,7 @@ class SlackBot(object):
                  max_events=5,
                  username='Luigi-slack Bot',
                  as_user=False,
+                 use_private_channels=True,
                  task_representation=str,
                  print_env=[]):
         if not isinstance(events, list):
@@ -41,7 +42,7 @@ class SlackBot(object):
             log.info('SlackBot(channels=[]): notifications are not sent')
         self.events = events
         self._events_to_handle = self.events + [START]
-        self.client = SlackAPI(token, username, as_user)
+        self.client = SlackAPI(token, username, as_user, use_private_channels=use_private_channels)
         self.channels = channels
         self.max_events = max_events
         self.event_queue = defaultdict(list)
