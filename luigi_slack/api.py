@@ -40,7 +40,7 @@ class SlackBot(object):
         if not channels:
             log.info('SlackBot(channels=[]): notifications are not sent')
         self.events = events
-        self._events_to_handle = self.events + [START]
+        self._events_to_handle = self.events + [SUCCESS, START]
         self.client = SlackAPI(token, username, as_user)
         self.channels = channels
         self.max_events = max_events
