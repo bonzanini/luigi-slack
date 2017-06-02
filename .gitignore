@@ -6,4 +6,5 @@ dist
 .coverage
 htmlcov
 .eggs
+.cache
 

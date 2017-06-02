@@ -69,6 +69,15 @@ SlackBot Configuration
 
 [Blog post](http://marcobonzanini.com/2015/11/21/adding-slack-notifications-to-a-luigi-pipeline-in-python/) with a more verbose description of this package.
 
+
+Contributions
+-------------
+
+- [@amarco90](https://github.com/amarco90)
+- [@arsenyinfo](https://github.com/arsenyinfo)
+- [@saxelsen89](https://github.com/saxelsen89)
+
+
 --------
 
 Credits: inspired by [luigi-monitor](https://github.com/hudl/luigi-monitor).
