@@ -23,14 +23,14 @@ class SlackAPI(object):
         self.as_user = as_user
 
     def _get_channels(self, use_private_channels):
-        response = self.client.api_call('channels.list')
+        response = self.client.api_call('users.conversations')
         if not response['ok']:
             raise ChannelListNotLoadedError("Error while loading channels: {}".format(response['error']))
         channels = response.get('channels', [])
         if not channels:
             raise ChannelListNotLoadedError("Channel list is empty")
         if use_private_channels:
-            response = self.client.api_call('groups.list')
+            response = self.client.api_call('users.conversations')
             if not response['ok']:
                 raise ChannelListNotLoadedError("Error while loading private channels: {}".format(response['error']))
             channels += response.get('groups', [])
